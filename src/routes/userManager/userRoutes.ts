@@ -7,7 +7,8 @@ const router = Router();
 const userController = new UserController();
 
 router.get('/', userController.allUsers);
-router.get('/cards', userController.threeCards);
+router.get('/card/:id', isAuthenticated, userController.card);
+router.get('/cards/:id', isAuthenticated, userController.threeCards);
 router.put('/pickCard', isAuthenticated, userController.pickCard);
 
 export default router;
