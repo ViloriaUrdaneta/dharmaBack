@@ -3,6 +3,13 @@ import { Account } from '../../models/Account';
 import { Transaction, State } from '../../models/Transaction';
 import { Response, Request, NextFunction } from 'express';
 
+interface Trans {
+    id: number;
+    date: string;
+    message: string;
+    amount: number;
+    card: number;
+}
 
 export default class UserController {
     
@@ -49,6 +56,26 @@ export default class UserController {
                     ]
                 }
             });
+            function formatDate(isoDate: Date | undefined): string {
+                if (!isoDate) {
+                    return ""; 
+                }
+                const date = new Date(isoDate);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, por lo que sumamos 1
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            const trans: Trans[] = transactions
+                .filter((item) => 
+                    typeof item.id === 'number')  // Filtrar objetos con id válido
+                .map((item) => ({
+                    id: item.id!,
+                    date: formatDate(item.createdAt),
+                    amount: item.amount || 0,
+                    message: item.sender_account === id ? item.reciever_message || '' : item.sender_message || '',
+                    card: item.sender_account === id ? item.receiver_account || 0 : item.sender_account || 0,
+            }));
             if (transactions.length > 0){
                 const totalIncomes = transactions.reduce((acc, trans) => {
                     if (trans.receiver_account === id && trans.amount){ 
@@ -62,7 +89,7 @@ export default class UserController {
                     }
                     return acc;
                     }, 0);
-                return res.status(200).json({ transactions, totalOutgoings, totalIncomes, message: 'transactions finded' });
+                return res.status(200).json({ trans, totalOutgoings, totalIncomes, message: 'transactions finded' });
             } else {
                 return res.status(401).json({ message: 'No transactions' });
             }
