@@ -189,7 +189,7 @@ export default class UserController {
         res: Response,
         next: NextFunction
     ) => {
-        const { sender, receiver, charge, message } = req.body;
+        const { sender, receiver, senderCard, receiverCard, charge, message } = req.body;
         try {
             const senderAccount = await Account.findOne({where: { user_id : sender }})
             const receiverAccount = await Account.findOne({where: { user_id : receiver }})
@@ -202,6 +202,8 @@ export default class UserController {
                     transaction.sender_account = senderAccount.id;
                     transaction.sender_message = message;
                     transaction.receiver_account = receiverAccount?.id
+                    transaction.sender_card = senderCard;
+                    transaction.receiver_card = receiverCard;
                     transaction.recharge = false;
                     transaction.state = State.PENDING;
                     await transaction.save();

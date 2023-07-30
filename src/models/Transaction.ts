@@ -38,6 +38,14 @@ export class Transaction extends Model<Transaction> {
     @Column
     receiver_account?: number;
 
+    @AllowNull(false)
+    @Column
+    sender_card?: string;
+
+    @AllowNull(false)
+    @Column
+    receiver_card?: string;
+
     @AllowNull(true)
     @Column
     sender_message?: string;
