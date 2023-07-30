@@ -12,7 +12,7 @@ router.get('/sent/:id', isAuthenticated, transactionController.sent);
 router.get('/received/:id', isAuthenticated, transactionController.received);
 router.get('/pendingReceived/:id', isAuthenticated, transactionController.pendingReceived);
 router.post('/giveAway', isAuthenticated, transactionController.giveAway);
-router.post('/receive', isAuthenticated, transactionController.receive);
+router.put('/receive', isAuthenticated, transactionController.receive);
 router.put('/decline', isAuthenticated, transactionController.decline)
 
 export default router;

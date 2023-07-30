@@ -171,9 +171,10 @@ export default class UserController {
                 }
             });
             if (transactions.length > 0){
-                return res.status(200).json({ transactions, message: 'transactions finded' });
+                const number = transactions.length 
+                return res.status(200).json({ transactions, number, message: 'transactions finded' });
             } else {
-                return res.status(401).json({ message: 'No pending transactions' });
+                return res.status(205).json({ message: 'No pending transactions' });
             } 
         } catch (error) {
             return res.status(400).json({
