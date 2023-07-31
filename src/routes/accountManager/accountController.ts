@@ -18,7 +18,7 @@ export default class AccountController {
             if (account){
                 return res.status(200).json({ account, message: 'Account finded' });
             } else {
-                return res.status(401).json({ message: 'Account not found' });
+                return res.status(205).json({ message: 'Account not found' });
             }               
         } catch (error) {
             console.log(error)
@@ -58,6 +58,7 @@ export default class AccountController {
         const { id, charge } = req.body;
         try {
             const account = await Account.findOne({where: { user_id : id }})
+            console.log(account)
             if (account){
                 account.amount = account.amount + charge;
                 await account.save();
@@ -69,13 +70,14 @@ export default class AccountController {
                 await transaction.save();
                 return res.status(200).json({ account, message: 'Account recharged successfully' });
             } else {
-                return res.status(401).json({ message: 'Account not found' });
+                return res.status(402).json({ message: 'Account not found' });
             }
         } catch (error) {
             return res.status(400).json({
                 message: "Error en accountController",
                 error
             });
+            
         }
     }
 

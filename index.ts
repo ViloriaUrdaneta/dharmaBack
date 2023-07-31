@@ -5,7 +5,7 @@ import { seedUsers } from "./src/env/seeds";
 const { User } = models;
 
 connection
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log("database connected");
     app.listen(3001, async () => {

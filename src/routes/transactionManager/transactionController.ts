@@ -8,7 +8,8 @@ interface Trans {
     date: string;
     message: string;
     amount: number;
-    card: number;
+    card: string;
+    inOut: string
 }
 
 export default class UserController {
@@ -52,7 +53,8 @@ export default class UserController {
                                 { sender_account: id }
                             ]
                         },
-                        { state: 'done' }
+                        { state: 'done' },
+                        { recharge: false }
                     ]
                 }
             });
@@ -74,7 +76,8 @@ export default class UserController {
                     date: formatDate(item.createdAt),
                     amount: item.amount || 0,
                     message: item.sender_account === id ? item.reciever_message || '' : item.sender_message || '',
-                    card: item.sender_account === id ? item.receiver_account || 0 : item.sender_account || 0,
+                    card: item.sender_account === id ? item.receiver_card || '' : item.sender_card || '',
+                    inOut: item.sender_account === id ? 'out' : 'in'
             }));
             if (transactions.length > 0){
                 const totalIncomes = transactions.reduce((acc, trans) => {
@@ -91,7 +94,7 @@ export default class UserController {
                     }, 0);
                 return res.status(200).json({ trans, totalOutgoings, totalIncomes, message: 'transactions finded' });
             } else {
-                return res.status(401).json({ message: 'No transactions' });
+                return res.status(205).json({ message: 'No transactions' });
             }
         } catch (error) {
             return res.status(400).json({
@@ -241,13 +244,13 @@ export default class UserController {
                         await receiverAccount.save();
                         return res.status(200).json({ transaction, message: 'Transaction received successfully' });
                     } else{
-                        return res.status(401).json({ message: 'Receiver not found' });
+                        return res.status(205).json({ message: 'Receiver not found' });
                     }
                 }else{
-                    return res.status(401).json({ message: 'Transaction already finished' });
+                    return res.status(205).json({ message: 'Transaction already finished' });
                 }
             } else{
-                return res.status(401).json({ message: 'Transaction not found' });
+                return res.status(205).json({ message: 'Transaction not found' });
             }
         } catch (error) {
             return res.status(400).json({
@@ -290,6 +293,5 @@ export default class UserController {
             });
         }
     }
-
 
 }
